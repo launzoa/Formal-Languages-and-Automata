@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Validador de Expressões Regulares - Linguagens Formais e Autômatos</title>
+  <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+  <div class="container">
+    <header class="header">
+      <h1>Validador de Expressões Regulares</h1>
+      <p>Linguagens Formais e Autômatos</p>
+    </header>
+
+    <main class="card">
+      <form id="validator-form" novalidate>
+        <!-- Campo para a Expressão Regular -->
+        <div class="form-group">
+          <label for="regex-input">Expressão Regular (Regex):</label>
+          <input
+            type="text"
+            id="regex-input"
+            class="form-input"
+            placeholder="Ex: (a|b)*abb ou ^[0-9]+$"
+            autocomplete="off"
+            spellcheck="false"
+          >
+        </div>
+
+        <!-- Campo para o Texto de Teste -->
+        <div class="form-group">
+          <label for="text-input">Texto de Teste (Cadeia / String):</label>
+          <textarea
+            id="text-input"
+            class="form-input"
+            placeholder="Insira a cadeia de caracteres a ser testada..."
+            autocomplete="off"
+            spellcheck="false"
+          ></textarea>
+        </div>
+
+        <!-- Grupo de Botões -->
+        <div class="buttons-group">
+          <button type="submit" id="btn-validate" class="btn btn-primary">Validar</button>
+          <button type="button" id="btn-clear" class="btn btn-secondary">Limpar</button>
+        </div>
+
+        <!-- Opção de validação em tempo real -->
+        <div class="options-row">
+          <input type="checkbox" id="live-validation-toggle" checked>
+          <label for="live-validation-toggle">Validar em tempo real ao digitar</label>
+        </div>
+      </form>
+
+      <!-- Painel de Feedback Visual e Exibição de Emoji -->
+      <section id="result-panel" class="result-panel" aria-live="polite">
+        <div id="result-placeholder" class="result-placeholder">
+          Preencha a expressão regular e o texto para verificar a validade.
+        </div>
+
+        <div id="result-content" class="result-content">
+          <div id="emoji-wrapper" class="emoji-wrapper">
+            <img id="emoji-img" class="emoji-img" src="assets/emoji_valido.jpg" alt="Emoji de validação">
+          </div>
+          <div id="status-badge" class="status-badge"></div>
+          <p id="status-message" class="status-message"></p>
+        </div>
+      </section>
+    </main>
+
+    <footer class="footer">
+      <p>Estrutura modular com JavaScript ES6 • HTML5 • CSS3</p>
+    </footer>
+  </div>
+
+  <!-- Ponto de entrada modular JavaScript -->
+  <script type="module" src="js/main.js"></script>
+</body>
+</html>

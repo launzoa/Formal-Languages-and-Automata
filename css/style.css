@@ -1,0 +1,291 @@
+:root {
+  --font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+  
+  /* Cores Base */
+  --bg-color: #f1f5f9;
+  --card-bg: #ffffff;
+  --text-main: #1e293b;
+  --text-muted: #64748b;
+  --border-color: #cbd5e1;
+  
+  /* Cores de Validação */
+  --color-valid: #16a34a;
+  --bg-valid: #f0fdf4;
+  --border-valid: #22c55e;
+  --ring-valid: rgba(34, 197, 94, 0.3);
+
+  --color-invalid: #dc2626;
+  --bg-invalid: #fef2f2;
+  --border-invalid: #ef4444;
+  --ring-invalid: rgba(239, 68, 68, 0.3);
+
+  /* Ações */
+  --primary-color: #2563eb;
+  --primary-hover: #1d4ed8;
+  --secondary-bg: #e2e8f0;
+  --secondary-hover: #cbd5e1;
+  
+  /* Sombras e Bordas */
+  --radius-sm: 6px;
+  --radius-md: 12px;
+  --radius-lg: 16px;
+  --shadow-card: 0 10px 25px -5px rgba(0, 0, 0, 0.08), 0 8px 10px -6px rgba(0, 0, 0, 0.04);
+}
+
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+body {
+  font-family: var(--font-family);
+  background-color: var(--bg-color);
+  color: var(--text-main);
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  padding: 24px 16px;
+}
+
+.container {
+  width: 100%;
+  max-width: 600px;
+}
+
+/* Header */
+.header {
+  text-align: center;
+  margin-bottom: 24px;
+}
+
+.header h1 {
+  font-size: 1.85rem;
+  font-weight: 700;
+  color: var(--text-main);
+  margin-bottom: 8px;
+}
+
+.header p {
+  color: var(--text-muted);
+  font-size: 0.95rem;
+}
+
+/* Card e Formulário */
+.card {
+  background-color: var(--card-bg);
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow-card);
+  padding: 32px 28px;
+  border: 1px solid #e2e8f0;
+}
+
+.form-group {
+  margin-bottom: 20px;
+  display: flex;
+  flex-direction: column;
+}
+
+.form-group label {
+  font-size: 0.9rem;
+  font-weight: 600;
+  margin-bottom: 8px;
+  color: var(--text-main);
+}
+
+.form-input {
+  font-family: monospace, var(--font-family);
+  font-size: 1rem;
+  padding: 12px 14px;
+  border: 2px solid var(--border-color);
+  border-radius: var(--radius-sm);
+  background-color: #fff;
+  color: var(--text-main);
+  outline: none;
+  transition: border-color 0.2s ease, box-shadow 0.2s ease, background-color 0.2s ease;
+}
+
+.form-input:focus {
+  border-color: var(--primary-color);
+  box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.2);
+}
+
+textarea.form-input {
+  resize: vertical;
+  min-height: 80px;
+}
+
+/* ==========================================================================
+   Estados de Validação nos Campos (Verde / Vermelho)
+   ========================================================================== */
+.form-input.is-valid {
+  border-color: var(--border-valid) !important;
+  background-color: var(--bg-valid) !important;
+  box-shadow: 0 0 0 3px var(--ring-valid) !important;
+}
+
+.form-input.is-invalid {
+  border-color: var(--border-invalid) !important;
+  background-color: var(--bg-invalid) !important;
+  box-shadow: 0 0 0 3px var(--ring-invalid) !important;
+}
+
+/* ==========================================================================
+   Botões e Controles
+   ========================================================================== */
+.buttons-group {
+  display: flex;
+  gap: 12px;
+  margin-top: 12px;
+}
+
+.btn {
+  flex: 1;
+  padding: 12px 20px;
+  border: none;
+  border-radius: var(--radius-sm);
+  font-size: 1rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.btn-primary {
+  background-color: var(--primary-color);
+  color: #ffffff;
+}
+
+.btn-primary:hover {
+  background-color: var(--primary-hover);
+}
+
+.btn-secondary {
+  background-color: var(--secondary-bg);
+  color: var(--text-main);
+}
+
+.btn-secondary:hover {
+  background-color: var(--secondary-hover);
+}
+
+.options-row {
+  margin-top: 14px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 0.85rem;
+  color: var(--text-muted);
+}
+
+.options-row input[type="checkbox"] {
+  accent-color: var(--primary-color);
+  cursor: pointer;
+}
+
+/* Painel de Resultado e Emoji */
+  
+.result-panel {
+  margin-top: 28px;
+  padding-top: 20px;
+  border-top: 1px dashed #cbd5e1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  min-height: 170px;
+  justify-content: center;
+}
+
+.result-placeholder {
+  color: var(--text-muted);
+  font-size: 0.9rem;
+  font-style: italic;
+}
+
+.result-content {
+  display: none;
+  flex-direction: column;
+  align-items: center;
+  animation: fadeIn 0.3s ease-in-out;
+}
+
+.result-content.show {
+  display: flex;
+}
+
+.emoji-wrapper {
+  position: relative;
+  width: 100px;
+  height: 100px;
+  border-radius: 50%;
+  overflow: hidden;
+  box-shadow: 0 4px 14px rgba(0, 0, 0, 0.12);
+  margin-bottom: 12px;
+  border: 4px solid transparent;
+  transition: transform 0.2s ease, border-color 0.2s ease;
+  background-color: #f8fafc;
+}
+
+.emoji-wrapper:hover {
+  transform: scale(1.05);
+}
+
+.emoji-wrapper.is-valid {
+  border-color: var(--border-valid);
+}
+
+.emoji-wrapper.is-invalid {
+  border-color: var(--border-invalid);
+}
+
+.emoji-img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+}
+
+.status-badge {
+  font-size: 1.1rem;
+  font-weight: 700;
+  margin-bottom: 4px;
+}
+
+.status-badge.is-valid {
+  color: var(--color-valid);
+}
+
+.status-badge.is-invalid {
+  color: var(--color-invalid);
+}
+
+.status-message {
+  font-size: 0.88rem;
+  color: var(--text-muted);
+  max-width: 440px;
+  word-break: break-word;
+}
+
+/* Footer */
+  
+.footer {
+  margin-top: 24px;
+  text-align: center;
+  font-size: 0.8rem;
+  color: var(--text-muted);
+}
+
+/* Animações */
+   
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(6px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
