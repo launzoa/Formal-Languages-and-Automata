@@ -1,4 +1,3 @@
-export function validate(regexPattern, testText) {
 /**
  * Valida se um determinado texto é aceito por uma determinada expressão regular.
  *
@@ -6,27 +5,53 @@ export function validate(regexPattern, testText) {
  * @param {string} testText - O texto de teste inserido no campo abaixo.
  * @returns {{ isValid: boolean, message?: string }} Objeto contendo o resultado da validação.
  */
+export function validate(regexPattern, testText) {
+  // Verifica se a expressão regular foi informada
+  if (!regexPattern || !regexPattern.trim()) {
+    return {
+      isValid: false,
+      message: 'Por favor, insira uma expressão regular.'
+    };
+  }
 
-  // ===========================================================================
-  // TODO: IMPLEMENTE A SUA LÓGICA DE VALIDAÇÃO AQUI!
-  // ===========================================================================
-  //
-  // Exemplos de abordagens que você pode implementar:
-  // 1. Algoritmo de conversão de Expressão Regular -> AFND -> AFD
-  // 2. Simulação direta de autômato
-  // 3. Parser sintático e semântico personalizado
-  // 4. Ou qualquer outra regra da disciplina de Linguagens Formais e Autômatos
-  //
-  // Exemplo de retorno esperado:
-  // return {
-  //   isValid: true, // ou false
-  //   message: "Cadeia aceita pela linguagem da expressão regular."
-  // };
-  // ===========================================================================
+  const rawPattern = regexPattern.trim();
+  const text = testText !== undefined && testText !== null ? String(testText) : '';
 
-  // Retorno padrão inicial (substitua pelo seu algoritmo):
-  return {
-    isValid: false,
-    message: "Aguardando a implementação da sua lógica de validação em js/validator.js"
-  };
+  try {
+    let regex;
+
+    // Suporte para notação com barras e flags (ex: /^[0-9]+$/i ou /abc/g)
+    const slashMatch = rawPattern.match(/^\/(.*)\/([a-z]*)$/i);
+
+    if (slashMatch) {
+      const patternBody = slashMatch[1];
+      const flags = slashMatch[2];
+      // Ancorar se ainda não estiver ancorada, para validar a cadeia completa
+      const anchored = (patternBody.startsWith('^') && patternBody.endsWith('$'))
+        ? patternBody
+        : `^(?:${patternBody})$`;
+      regex = new RegExp(anchored, flags);
+    } else {
+      // Se não tiver delimitadores de barra (ex: (a|b)*abb ou ^[0-9]+$)
+      // Ancoramos para validar se a cadeia inteira é aceita pela regex
+      const anchored = (rawPattern.startsWith('^') && rawPattern.endsWith('$'))
+        ? rawPattern
+        : `^(?:${rawPattern})$`;
+      regex = new RegExp(anchored);
+    }
+
+    const isValid = regex.test(text);
+
+    return {
+      isValid,
+      message: isValid
+        ? 'Cadeia de texto válida para a expressão regular!'
+        : 'Cadeia de texto inválida para a expressão regular!'
+    };
+  } catch (error) {
+    return {
+      isValid: false,
+      message: `Erro na expressão regular: ${error.message}`
+    };
+  }
 }
