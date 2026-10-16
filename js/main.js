@@ -7,15 +7,16 @@ import {
   resetUI,
   getElements
 } from './ui.js';
+import { initGrammarUI } from './grammar/grammar-ui.js';
+import { initAutomatonUI, loadDFAFromRegex } from './automaton/automaton-ui.js?v=3.2';
 
 let debounceTimer = null;
 
 function handleValidation() {
-  /*
-    @brief Função principal para lidar com a validação do formulário
+  /**
+   * Função principal para lidar com a validação do formulário de expressões regulares
    */
-
-  const { regexPattern, testText } = getFormValues(); // Obtém os valores atuais do formulário
+  const { regexPattern, testText } = getFormValues();
 
   // Se ambos os campos estiverem vazios e não for submit explícito, redefinir
   if (!regexPattern.trim() && !testText.trim()) {
@@ -35,34 +36,53 @@ function handleValidation() {
 }
 
 function handleLiveInput() {
-  /*
-  @brief Função para lidar com a entrada em tempo real nos campos de regex e texto
-  */
-
-  // Se a validação em tempo real não estiver ativa, não faz nada
+  /**
+   * Lida com a entrada em tempo real nos campos de regex e texto
+   */
   if (!isLiveValidationActive()) return;
-  
-  clearTimeout(debounceTimer);  // Caso contrário, limpa o timer anterior
-  // E define um novo timer para chamar `handleValidation` após 200ms de inatividade
+
+  clearTimeout(debounceTimer);
   debounceTimer = setTimeout(() => {
     handleValidation();
   }, 200);
 }
 
-function init() {
-  /*
-    @brief Função de inicialização que configura os eventos do formulário e dos campos 
-  */
+function setupNavigation() {
+  /**
+   * Configura o menu superior de navegação por abas
+   */
+  const tabs = document.querySelectorAll('.nav-tab');
+  const views = document.querySelectorAll('.tab-view');
 
-  const elements = getElements(); // Obtém os elementos do DOM necessários
+  tabs.forEach(tab => {
+    tab.addEventListener('click', () => {
+      const targetViewId = tab.getAttribute('data-target');
 
-  // Verifica se o formulário existe no DOM antes de adicionar eventos
+      // Atualiza aba ativa
+      tabs.forEach(t => t.classList.remove('active'));
+      tab.classList.add('active');
+
+      // Atualiza visualização ativa
+      views.forEach(view => {
+        if (view.id === targetViewId) {
+          view.classList.add('active');
+        } else {
+          view.classList.remove('active');
+        }
+      });
+    });
+  });
+}
+
+function initRegexModule() {
+  const elements = getElements();
+
   if (!elements.form) {
-    console.error('Formulário não encontrado no DOM.');
+    console.error('Formulário de regex não encontrado no DOM.');
     return;
   }
 
-  // Evento de submissão do formulário (botão "Validar" ou tecla Enter)
+  // Evento de submissão do formulário
   elements.form.addEventListener('submit', (e) => {
     e.preventDefault();
     handleValidation();
@@ -80,10 +100,38 @@ function init() {
   if (elements.regexInput) {
     elements.regexInput.addEventListener('input', handleLiveInput);
   }
-  // Adiciona o evento de input ao campo de texto, se existir
   if (elements.textInput) {
     elements.textInput.addEventListener('input', handleLiveInput);
   }
+
+  // Evento do botão "Gerar AFD a partir do Regex"
+  const btnRegexToDfa = document.getElementById('btn-convert-regex-to-dfa');
+  if (btnRegexToDfa) {
+    btnRegexToDfa.addEventListener('click', () => {
+      const { regexPattern, testText } = getFormValues();
+      if (!regexPattern.trim()) {
+        alert('Por favor, informe uma expressão regular para converter em AFD.');
+        return;
+      }
+      const tabAutomaton = document.getElementById('tab-automaton');
+      if (tabAutomaton) tabAutomaton.click();
+      loadDFAFromRegex(regexPattern, testText);
+    });
+  }
+}
+
+function init() {
+  // 1. Configura navegação do menu superior
+  setupNavigation();
+
+  // 2. Inicializa módulo do Validador de Expressões Regulares
+  initRegexModule();
+
+  // 3. Inicializa módulo do Simulador de Gramática Regular
+  initGrammarUI();
+
+  // 4. Inicializa módulo do Simulador de Autômato Finito Determinístico (AFD)
+  initAutomatonUI();
 }
 
 // Inicializa quando o DOM estiver pronto
