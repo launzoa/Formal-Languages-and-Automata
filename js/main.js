@@ -8,7 +8,7 @@ import {
   getElements
 } from './ui.js';
 import { initGrammarUI } from './grammar/grammar-ui.js';
-import { initAutomatonUI, loadDFAFromRegex } from './automaton/automaton-ui.js?v=3.2';
+import { initAutomatonUI, loadDFAFromRegex } from './automaton/automaton-ui.js';
 
 let debounceTimer = null;
 
