@@ -3,17 +3,41 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Validador de Expressões Regulares - Linguagens Formais e Autômatos</title>
+  <title>Linguagens Formais e Autômatos - Regex & Gramáticas Regulares</title>
   <link rel="stylesheet" href="css/style.css">
 </head>
 <body>
   <div class="container">
     <header class="header">
-      <h1>Validador de Expressões Regulares</h1>
-      <p>Linguagens Formais e Autômatos</p>
+      <h1>Linguagens Formais e Autômatos</h1>
+      <p>Simulador Interativo de Teoria da Computação</p>
     </header>
 
-    <main class="card">
+    <!-- Menu Superior de Navegação -->
+    <nav class="top-nav" aria-label="Menu principal de ferramentas">
+      <button type="button" id="tab-regex" class="nav-tab active" data-target="view-regex">
+        <span class="tab-icon">🔍</span>
+        <span class="tab-text">Validador de Expressões Regulares</span>
+      </button>
+      <button type="button" id="tab-grammar" class="nav-tab" data-target="view-grammar">
+        <span class="tab-icon">📜</span>
+        <span class="tab-text">Simulador de Gramática Regular <span class="tab-math">G = (V, T, P, S)</span></span>
+      </button>
+      <button type="button" id="tab-automaton" class="nav-tab" data-target="view-automaton">
+        <span class="tab-icon">⚙️</span>
+        <span class="tab-text">Autômatos Finitos (AFD / AFND)</span>
+      </button>
+    </nav>
+
+    <!-- ===================================================================== -->
+    <!-- MÓDULO 1: VALIDADOR DE EXPRESSÕES REGULARES                           -->
+    <!-- ===================================================================== -->
+    <main id="view-regex" class="card tab-view active">
+      <div class="card-header">
+        <h2>Validador de Expressões Regulares</h2>
+        <p class="card-subtitle">Verifique se uma cadeia de caracteres é aceita pela expressão regular</p>
+      </div>
+
       <form id="validator-form" novalidate>
         <!-- Campo para a Expressão Regular -->
         <div class="form-group">
@@ -44,6 +68,7 @@
         <div class="buttons-group">
           <button type="submit" id="btn-validate" class="btn btn-primary">Validar</button>
           <button type="button" id="btn-clear" class="btn btn-secondary">Limpar</button>
+          <button type="button" id="btn-convert-regex-to-dfa" class="btn btn-action" title="Converter esta expressão regular em um AFD">⚡ Gerar AFD</button>
         </div>
 
         <!-- Opção de validação em tempo real -->
@@ -69,12 +94,396 @@
       </section>
     </main>
 
+    <!-- ===================================================================== -->
+    <!-- MÓDULO 2: SIMULADOR DE GRAMÁTICA REGULAR                              -->
+    <!-- ===================================================================== -->
+    <section id="view-grammar" class="card tab-view">
+      <div class="card-header">
+        <h2>Simulador de Gramática Regular</h2>
+        <p class="card-subtitle">Classificação formal (GLD, GLE, GLUD, GLUE) e derivação sintática visual (estilo JFLAP)</p>
+      </div>
+
+      <form id="grammar-form" novalidate>
+        <!-- Carregamento rápido de exemplos -->
+        <div class="form-group example-group">
+          <label for="grammar-example-select">💡 Carregar Exemplo Pronto:</label>
+          <select id="grammar-example-select" class="form-select">
+            <option value="">-- Selecione um exemplo pronto --</option>
+          </select>
+        </div>
+
+        <!-- Grid de Definição da Quádrupla G = (V, T, P, S) -->
+        <div class="grammar-grid">
+          <!-- Variáveis V -->
+          <div class="form-group">
+            <label for="grammar-v-input">Variáveis / Não-Terminais (V):</label>
+            <input
+              type="text"
+              id="grammar-v-input"
+              class="form-input"
+              placeholder="Ex: S, A, B"
+              autocomplete="off"
+              spellcheck="false"
+            >
+            <span class="field-hint">Separados por vírgula ou espaço</span>
+          </div>
+
+          <!-- Terminais T -->
+          <div class="form-group">
+            <label for="grammar-t-input">Terminais / Alfabeto (T):</label>
+            <input
+              type="text"
+              id="grammar-t-input"
+              class="form-input"
+              placeholder="Ex: a, b ou 0, 1"
+              autocomplete="off"
+              spellcheck="false"
+            >
+            <span class="field-hint">Separados por vírgula ou espaço</span>
+          </div>
+        </div>
+
+        <!-- Regras de Produção P -->
+        <div class="form-group">
+          <div class="label-with-helper">
+            <label for="grammar-p-input">Regras de Produção (P):</label>
+            <button type="button" id="btn-insert-epsilon" class="btn-chip" title="Inserir símbolo de palavra vazia (ε)">
+              + Inserir ε
+            </button>
+          </div>
+          <textarea
+            id="grammar-p-input"
+            class="form-input code-font"
+            rows="5"
+            placeholder="Exemplo:&#10;S -> aS | bA | b&#10;A -> bA | ε"
+            autocomplete="off"
+            spellcheck="false"
+          ></textarea>
+          <span class="field-hint">Uma por linha ou com alternativas "|". Notações aceitas: <code>-&gt;</code> ou <code>→</code></span>
+        </div>
+
+        <div class="grammar-grid">
+          <!-- Símbolo Inicial S -->
+          <div class="form-group">
+            <label for="grammar-s-input">Símbolo Inicial (S):</label>
+            <input
+              type="text"
+              id="grammar-s-input"
+              class="form-input"
+              placeholder="Ex: S"
+              autocomplete="off"
+              spellcheck="false"
+            >
+          </div>
+
+          <!-- Palavra de Teste para Derivação -->
+          <div class="form-group">
+            <div class="label-with-helper">
+              <label for="grammar-word-input">Palavra de Teste (w):</label>
+              <button type="button" id="btn-word-epsilon" class="btn-chip" title="Testar palavra vazia">
+                Usar ε (vazia)
+              </button>
+            </div>
+            <input
+              type="text"
+              id="grammar-word-input"
+              class="form-input code-font"
+              placeholder="Ex: ababb"
+              autocomplete="off"
+              spellcheck="false"
+            >
+          </div>
+        </div>
+
+        <!-- Botões de Ação -->
+        <div class="buttons-group">
+          <button type="button" id="btn-classify-grammar" class="btn btn-secondary">Classificar Gramática</button>
+          <button type="button" id="btn-derive-word" class="btn btn-primary">Simular Derivação (JFLAP)</button>
+          <button type="button" id="btn-convert-grammar-to-dfa" class="btn btn-action" title="Converter esta gramática para um Autômato Finito Determinístico">⚡ Gerar AFD a partir da Gramática</button>
+          <button type="button" id="btn-grammar-clear" class="btn btn-neutral">Limpar</button>
+        </div>
+      </form>
+
+      <!-- Painel de Classificação Formal -->
+      <section id="grammar-classification-panel" class="grammar-output-panel" style="display: none;">
+        <div class="panel-section-header">
+          <h3>Classificação Formal da Gramática</h3>
+        </div>
+        <div class="classification-result-card">
+          <div class="badge-wrapper">
+            <span id="grammar-classification-badge" class="classification-badge">GLUD</span>
+          </div>
+          <h4 id="grammar-classification-title" class="classification-title"></h4>
+          <p id="grammar-classification-desc" class="classification-desc"></p>
+        </div>
+
+        <div id="grammar-classification-alerts"></div>
+
+        <div class="rules-breakdown-section">
+          <h4>Diagnóstico por Regra de Produção:</h4>
+          <ul id="grammar-classification-rules" class="rules-list"></ul>
+        </div>
+      </section>
+
+      <!-- Painel de Simulação Visual da Derivação (JFLAP) -->
+      <section id="grammar-derivation-panel" class="grammar-output-panel" style="display: none;">
+        <div class="panel-section-header">
+          <h3>Simulação Visual de Derivação Sintática</h3>
+        </div>
+
+        <div class="derivation-status-box">
+          <div id="derivation-status-badge" class="status-badge is-valid">Cadeia Aceita ✔</div>
+          <p id="derivation-status-message" class="status-message"></p>
+          <div id="derivation-chain-display" class="derivation-chain"></div>
+        </div>
+
+        <!-- Player Interativo de Passos de Derivação -->
+        <div id="derivation-player" class="derivation-player">
+          <div class="player-info">
+            <span id="player-step-counter" class="step-counter">Passo 0 de 0</span>
+          </div>
+          <div class="player-controls">
+            <button type="button" id="btn-player-first" class="player-btn" title="Primeiro passo">⏮</button>
+            <button type="button" id="btn-player-prev" class="player-btn" title="Passo anterior">◀</button>
+            <button type="button" id="btn-player-play" class="player-btn btn-play" title="Reproduzir automaticamente">▶ Reproduzir</button>
+            <button type="button" id="btn-player-next" class="player-btn" title="Próximo passo">▶</button>
+            <button type="button" id="btn-player-last" class="player-btn" title="Último passo">⏭</button>
+          </div>
+        </div>
+
+        <!-- Renderização da Árvore Sintática em SVG (estilo JFLAP) -->
+        <div class="tree-visual-section">
+          <h4>Árvore de Derivação Sintática (JFLAP):</h4>
+          <div id="derivation-tree-container" class="tree-container"></div>
+        </div>
+
+        <!-- Tabela Completa de Passos -->
+        <div class="steps-table-section">
+          <h4>Passo a Passo da Derivação:</h4>
+          <div class="table-responsive">
+            <table class="steps-table">
+              <thead>
+                <tr>
+                  <th style="width: 70px;">Passo</th>
+                  <th>Forma Sentencial</th>
+                  <th>Regra Aplicada</th>
+                  <th>Variável Expandida</th>
+                </tr>
+              </thead>
+              <tbody id="derivation-steps-tbody"></tbody>
+            </table>
+          </div>
+        </div>
+      </section>
+    </section>
+
+    <!-- ===================================================================== -->
+    <!-- MÓDULO 3: AUTÔMATOS FINITOS (AFD / AFND)                              -->
+    <!-- ===================================================================== -->
+    <section id="view-automaton" class="card tab-view">
+      <div class="card-header">
+        <h2>Autômatos Finitos (AFD / AFND / AFND-ε)</h2>
+        <p class="card-subtitle">Definição formal M = (Q, Σ, δ, q0, F), classificação automática, transições-ε, simulação por múltiplos ramos, conversão para AFD (Construção de Subconjuntos) e visualização gráfica estilo JFLAP</p>
+      </div>
+
+      <form id="automaton-form" novalidate>
+        <!-- Carregamento rápido de exemplos -->
+        <div class="form-group example-group">
+          <label for="automaton-example-select">💡 Carregar Exemplo Pronto (AFD / AFND / AFND-ε):</label>
+          <select id="automaton-example-select" class="form-select">
+            <option value="">-- Selecione um autômato pronto para carregar --</option>
+          </select>
+        </div>
+
+        <!-- Grid de Definição da 5-tupla M = (Q, Σ, δ, q0, F) -->
+        <div class="grammar-grid">
+          <!-- Estados Q -->
+          <div class="form-group">
+            <label for="automaton-q-input">Conjunto de Estados (Q):</label>
+            <input
+              type="text"
+              id="automaton-q-input"
+              class="form-input"
+              placeholder="Ex: q0, q1, q2"
+              autocomplete="off"
+              spellcheck="false"
+            >
+            <span class="field-hint">Separados por vírgula ou espaço</span>
+          </div>
+
+          <!-- Alfabeto Σ -->
+          <div class="form-group">
+            <label for="automaton-sigma-input">Alfabeto de Entrada (Σ):</label>
+            <input
+              type="text"
+              id="automaton-sigma-input"
+              class="form-input"
+              placeholder="Ex: 0, 1 ou a, b"
+              autocomplete="off"
+              spellcheck="false"
+            >
+            <span class="field-hint">Separados por vírgula ou espaço</span>
+          </div>
+        </div>
+
+        <!-- Transições δ -->
+        <div class="form-group">
+          <label for="automaton-delta-input">Função de Transição (δ):</label>
+          <textarea
+            id="automaton-delta-input"
+            class="form-input code-font"
+            rows="5"
+            placeholder="Exemplo AFND:&#10;q0, a -> q0, q1&#10;q0, b -> q0&#10;q1, b -> q2&#10;q2, ε -> q3"
+            autocomplete="off"
+            spellcheck="false"
+          ></textarea>
+          <span class="field-hint">Uma transição por linha no formato: <code>origem, símbolo -&gt; destino1, destino2</code> ou <code>δ(q, a) = {p1, p2}</code> (use <code>ε</code> ou <code>lambda</code> para transições vazias)</span>
+        </div>
+
+        <div class="grammar-grid">
+          <!-- Estado Inicial q0 -->
+          <div class="form-group">
+            <label for="automaton-q0-input">Estado Inicial (q0):</label>
+            <input
+              type="text"
+              id="automaton-q0-input"
+              class="form-input"
+              placeholder="Ex: q0"
+              autocomplete="off"
+              spellcheck="false"
+            >
+          </div>
+
+          <!-- Estados Finais F -->
+          <div class="form-group">
+            <label for="automaton-f-input">Estados de Aceitação / Finais (F):</label>
+            <input
+              type="text"
+              id="automaton-f-input"
+              class="form-input"
+              placeholder="Ex: q2 ou q1, q2"
+              autocomplete="off"
+              spellcheck="false"
+            >
+          </div>
+
+          <!-- Palavra de Teste para o Autômato -->
+          <div class="form-group">
+            <div class="label-with-helper">
+              <label for="automaton-word-input">Palavra de Teste (w):</label>
+              <button type="button" id="btn-automaton-word-epsilon" class="btn-chip" title="Testar palavra vazia">
+                Usar ε (vazia)
+              </button>
+            </div>
+            <input
+              type="text"
+              id="automaton-word-input"
+              class="form-input code-font"
+              placeholder="Ex: ababb ou 1010"
+              autocomplete="off"
+              spellcheck="false"
+            >
+          </div>
+        </div>
+
+        <!-- Botões de Ação do Autômato -->
+        <div class="buttons-group">
+          <button type="button" id="btn-build-dfa" class="btn btn-secondary">Construir / Validar Autômato</button>
+          <button type="button" id="btn-simulate-dfa" class="btn btn-primary">Simular Palavra (JFLAP)</button>
+          <button type="button" id="btn-determinize-dfa" class="btn btn-action" title="Converter AFND em AFD determinístico equivalente via Construção de Subconjuntos">⚡ Converter AFND em AFD</button>
+          <button type="button" id="btn-automaton-clear" class="btn btn-neutral">Limpar</button>
+        </div>
+      </form>
+
+      <!-- Painel de Informações Formais e Tabela de Transições -->
+      <section id="automaton-info-panel" class="grammar-output-panel" style="display: none;">
+        <div class="panel-section-header">
+          <h3>Definição Formal e Classificação do Autômato</h3>
+        </div>
+
+        <div class="classification-result-card">
+          <div class="badge-wrapper">
+            <span id="automaton-type-badge" class="classification-badge">Não Analisado</span>
+          </div>
+          <h4 id="automaton-type-title" class="classification-title">Classificação do Autômato</h4>
+          <p id="automaton-type-desc" class="classification-desc"></p>
+          <pre id="automaton-formal-def" class="formal-def-box"></pre>
+        </div>
+
+        <div id="automaton-alerts"></div>
+
+        <!-- Tabela de Subconjuntos (Subset Construction), quando determinizado -->
+        <div id="automaton-subset-table-container" class="table-section" style="display: none;"></div>
+
+        <div class="table-section">
+          <h4>Matriz da Tabela de Transições (δ):</h4>
+          <div id="automaton-transition-table-container"></div>
+        </div>
+
+        <!-- Diagrama Gráfico de Estados em SVG (JFLAP) -->
+        <div class="diagram-section">
+          <h4>Diagrama de Transição de Estados (JFLAP):</h4>
+          <div id="automaton-diagram-container" class="diagram-container"></div>
+        </div>
+      </section>
+
+      <!-- Painel de Simulação Passo a Passo no Autômato -->
+      <section id="automaton-simulation-panel" class="grammar-output-panel" style="display: none;">
+        <div class="panel-section-header">
+          <h3>Simulação de Processamento no Autômato</h3>
+        </div>
+
+        <div class="derivation-status-box">
+          <div id="dfa-status-badge" class="status-badge is-valid">Cadeia Aceita ✔</div>
+          <p id="dfa-status-message" class="status-message"></p>
+          <div id="dfa-config-chain" class="derivation-chain"></div>
+        </div>
+
+        <!-- Visualizador da Fita de Entrada -->
+        <div id="dfa-tape-container" class="tape-container"></div>
+
+        <!-- Player Interativo de Passos do AFD -->
+        <div class="derivation-player">
+          <div class="player-info">
+            <span id="dfa-step-counter" class="step-counter">Passo 0 de 0</span>
+          </div>
+          <div class="player-controls">
+            <button type="button" id="btn-dfa-first" class="player-btn" title="Primeiro passo">⏮</button>
+            <button type="button" id="btn-dfa-prev" class="player-btn" title="Passo anterior">◀</button>
+            <button type="button" id="btn-dfa-play" class="player-btn btn-play" title="Reproduzir automaticamente">▶ Reproduzir</button>
+            <button type="button" id="btn-dfa-next" class="player-btn" title="Próximo passo">▶</button>
+            <button type="button" id="btn-dfa-last" class="player-btn" title="Último passo">⏭</button>
+          </div>
+        </div>
+
+        <!-- Tabela Completa de Passos da Simulação -->
+        <div class="steps-table-section">
+          <h4>Rastreamento das Configurações Instantâneas:</h4>
+          <div class="table-responsive">
+            <table class="steps-table">
+              <thead>
+                <tr>
+                  <th style="width: 70px;">Passo</th>
+                  <th>Estado Atual</th>
+                  <th>Símbolo Lido</th>
+                  <th>Próximo Estado</th>
+                  <th>Fita Restante</th>
+                  <th>Configuração Instantânea Formal</th>
+                </tr>
+              </thead>
+              <tbody id="dfa-steps-tbody"></tbody>
+            </table>
+          </div>
+        </div>
+      </section>
+    </section>
+
     <footer class="footer">
-      <p>Estrutura modular com JavaScript ES6 • HTML5 • CSS3</p>
+      <p>Linguagens Formais e Autômatos • Estrutura modular ES6 • HTML5 • CSS3 • SVG</p>
     </footer>
   </div>
 
   <!-- Ponto de entrada modular JavaScript -->
-  <script type="module" src="js/main.js"></script>
+  <script type="module" src="js/main.js?v=3.2"></script>
 </body>
 </html>
